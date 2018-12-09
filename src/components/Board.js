@@ -1,5 +1,19 @@
 import React, { Component } from "react";
+import styled from "styled-components";
+
 import Square from "./Square";
+
+const Block = styled.div``;
+const Squares = styled.div``;
+const Row = styled.div`
+  margin-left: -5px;
+  display: flex;
+`;
+
+const Status = styled.div`
+  margin-bottom: 10px;
+  text-align: center;
+`;
 
 class Board extends Component {
   constructor(props) {
@@ -42,24 +56,26 @@ class Board extends Component {
     }
 
     return (
-      <div>
-        <div className="status">{status}</div>
-        <div className="board-row">
-          {this.renderSquare(0)}
-          {this.renderSquare(1)}
-          {this.renderSquare(2)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(3)}
-          {this.renderSquare(4)}
-          {this.renderSquare(5)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(6)}
-          {this.renderSquare(7)}
-          {this.renderSquare(8)}
-        </div>
-      </div>
+      <Block>
+        <Status>{status}</Status>
+        <Squares>
+          <Row>
+            {this.renderSquare(0)}
+            {this.renderSquare(1)}
+            {this.renderSquare(2)}
+          </Row>
+          <Row>
+            {this.renderSquare(3)}
+            {this.renderSquare(4)}
+            {this.renderSquare(5)}
+          </Row>
+          <Row>
+            {this.renderSquare(6)}
+            {this.renderSquare(7)}
+            {this.renderSquare(8)}
+          </Row>
+        </Squares>
+      </Block>
     );
   }
 }

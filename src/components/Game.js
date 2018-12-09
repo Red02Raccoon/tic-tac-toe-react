@@ -1,18 +1,23 @@
 import React, { Component } from "react";
-import Board from "./Board";
+import styled from "styled-components";
 
-class Game extends React.Component {
+import Board from "./Board";
+import GameInfo from "./GameInfo";
+
+const Block = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
+class Game extends Component {
   render() {
     return (
-      <div className="game">
-        <div className="game-board">
-          <Board />
-        </div>
-        <div className="game-info">
-          <div>{/* status */}</div>
-          <ol>{/* TODO */}</ol>
-        </div>
-      </div>
+      <Block>
+        <Board />
+        <GameInfo />
+      </Block>
     );
   }
 }
