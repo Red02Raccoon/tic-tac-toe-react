@@ -2,31 +2,23 @@ import React from "react";
 import styled from "styled-components";
 
 const Square = styled.button`
-  background: #fff;
+  background-color: #fff;
   border: 1px solid #999;
   border-radius: 5px;
+  font-size: 30px;
+  line-height: 70px;
+  height: 70px;
+  width: 70px;
   margin: 5px;
-  font-size: 24px;
-  font-weight: bold;
-  line-height: 34px;
-  height: 34px;
   margin-right: -1px;
   margin-top: -1px;
-  padding: 0;
   text-align: center;
-  width: 34px;
+  transition: background-color 0.3s;
   &:hover {
-    background: #ddd;
-  }
-  &:focus {
-    outline: none;
+    background-color: #b2dfdb;
   }
 `;
 
 export default props => {
-  return (
-    <Square className="square" onClick={props.onClick}>
-      {props.value}
-    </Square>
-  );
+  return <Square onClick={props.onClick}>{props.value}</Square>;
 };

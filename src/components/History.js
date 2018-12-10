@@ -7,19 +7,12 @@ const Block = styled.div`
 
 class GameInfo extends Component {
   render() {
+    const { moves } = this.props;
+
     return (
       <Block>
-        <div>
-          there will be some info about game
-          {
-            //TODO: status
-          }
-        </div>
-        <ol>
-          {
-            //TODO: history
-          }
-        </ol>
+        <div>History</div>
+        <ol>{moves}</ol>
       </Block>
     );
   }
