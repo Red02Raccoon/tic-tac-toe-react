@@ -2,16 +2,17 @@ import React, { Component } from "react";
 import styled from "styled-components";
 
 import Board from "./Board";
-// import History from "./History";
+import History from "./History";
 
 const Block = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  position: relative;
   &.no-active {
     pointer-events: none;
   }
+`;
+
+const BoardBlock = styled.div`
+  margin-right: 20px;
 `;
 
 const BoardWrap = styled.div`
@@ -24,34 +25,36 @@ const BoardWrap = styled.div`
   }
 `;
 
+const HistoryBlock = styled.div`
+  position: absolute;
+  top: 0;
+  left: 100%;
+`;
+
 const Status = styled.div`
   margin-bottom: 10px;
   text-align: center;
 `;
 
-// const Step = styled.button`
-//   padding: 5px 10px;
-//   border: 1px solid #ccc;
-//   border-radius: 5px;
-//   min-width: 150px;
-//   display: inline-block;
-//   &:hover {
-//     background-color: #ccc;
-//   }
-// `;
+const Step = styled.button`
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  min-width: 150px;
+  display: inline-block;
+  &:hover {
+    background-color: #ccc;
+  }
+`;
 
-// const StepItem = styled.li`
-//   margin-bottom: 5px;
-// `;
+const StepItem = styled.li`
+  margin-bottom: 5px;
+`;
 class Game extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      history: [
-        {
-          squares: Array(9).fill(null)
-        }
-      ],
+      history: [{ squares: Array(9).fill(null) }],
       stepNumber: 0,
       xIsNext: true
     };
@@ -68,10 +71,13 @@ class Game extends Component {
     const history = this.state.history.slice(0, this.state.stepNumber + 1);
     const current = history[history.length - 1];
     const squares = current.squares.slice();
+
     if (calculateWinner(squares) || squares[i]) {
       return;
     }
+
     squares[i] = this.state.xIsNext ? "X" : "O";
+
     this.setState({
       history: history.concat([{ squares: squares }]),
       stepNumber: history.length,
@@ -84,35 +90,49 @@ class Game extends Component {
     const current = history[this.state.stepNumber];
     const winner = calculateWinner(current.squares);
 
-    // const moves = history.map((step, move) => {
-    //   const desc = move ? "Go to move #" + move : "Go to game start";
-    //   return (
-    //     <StepItem key={move}>
-    //       <Step onClick={() => this.jumpTo(move)}>{desc}</Step>
-    //     </StepItem>
-    //   );
-    // });
+    const moves = history.map((step, move) => {
+      const desc = move ? "Go to move #" + move : "Go to game start";
+      return (
+        <StepItem key={move}>
+          <Step onClick={() => this.jumpTo(move)}>{desc}</Step>
+        </StepItem>
+      );
+    });
 
     let status;
     let isActive = true;
     if (winner) {
-      status = "Winner: " + winner;
+      status = (
+        <div>
+          Winner: <b>{winner}</b>
+        </div>
+      );
       isActive = false;
     } else if (this.state.stepNumber !== 9) {
-      status = "Next player: " + (this.state.xIsNext ? "X" : "O");
+      status = (
+        <div>
+          Next player: <b>{this.state.xIsNext ? "X" : "O"}</b>
+        </div>
+      );
     } else {
-      status = "The game is over";
+      status = <b>The game is over</b>;
       isActive = false;
     }
 
     return (
       <Block>
-        <Status>{status}</Status>
-        <BoardWrap className={!isActive && "no-active"}>
-          <Board squares={current.squares} onClick={i => this.handleClick(i)} />
-        </BoardWrap>
-
-        {/* <History moves={moves} /> */}
+        <BoardBlock>
+          <Status>{status}</Status>
+          <BoardWrap className={!isActive && "no-active"}>
+            <Board
+              squares={current.squares}
+              onClick={i => this.handleClick(i)}
+            />
+          </BoardWrap>
+        </BoardBlock>
+        <HistoryBlock>
+          <History moves={moves} />
+        </HistoryBlock>
       </Block>
     );
   }
