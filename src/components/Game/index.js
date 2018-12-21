@@ -1,5 +1,10 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 import styled from "styled-components";
+
+import * as types from "../../features/modals/logic/types";
+import { showModal } from "../../features/modals/logic/actions";
+import { calculateWinner } from "../../utils";
 
 import Board from "./Board";
 import History from "./History";
@@ -50,6 +55,7 @@ const Step = styled.button`
 const StepItem = styled.li`
   margin-bottom: 5px;
 `;
+
 class Game extends Component {
   constructor(props) {
     super(props);
@@ -67,12 +73,26 @@ class Game extends Component {
     });
   }
 
+  handleWinner = info => {
+    const { line, winner } = info;
+    setTimeout(() => {
+      this.props.showModal({
+        modalType: types.LETS_PLAY,
+        isOpen: true,
+        modalProps: { winner }
+      });
+    }, 300);
+  };
+
   handleClick(i) {
     const history = this.state.history.slice(0, this.state.stepNumber + 1);
     const current = history[history.length - 1];
     const squares = current.squares.slice();
 
-    if (calculateWinner(squares) || squares[i]) {
+    if (
+      (calculateWinner(squares) && calculateWinner(squares).winner) ||
+      squares[i]
+    ) {
       return;
     }
 
@@ -88,7 +108,11 @@ class Game extends Component {
   render() {
     const history = this.state.history;
     const current = history[this.state.stepNumber];
-    const winner = calculateWinner(current.squares);
+    const winner =
+      calculateWinner(current.squares) &&
+      calculateWinner(current.squares).winner;
+    const line =
+      calculateWinner(current.squares) && calculateWinner(current.squares).line;
 
     const moves = history.map((step, move) => {
       const desc = move ? "Go to move #" + move : "Go to game start";
@@ -108,6 +132,8 @@ class Game extends Component {
         </div>
       );
       isActive = false;
+
+      this.handleWinner(calculateWinner(current.squares));
     } else if (this.state.stepNumber !== 9) {
       status = (
         <div>
@@ -125,6 +151,7 @@ class Game extends Component {
           <Status>{status}</Status>
           <BoardWrap className={!isActive && "no-active"}>
             <Board
+              line={!isActive && line}
               squares={current.squares}
               onClick={i => this.handleClick(i)}
             />
@@ -138,26 +165,7 @@ class Game extends Component {
   }
 }
 
-function calculateWinner(squares) {
-  const lines = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6]
-  ];
-
-  for (let i = 0; i < lines.length; i++) {
-    const [a, b, c] = lines[i];
-    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
-    }
-  }
-
-  return null;
-}
-
-export default Game;
+export default connect(
+  null,
+  { showModal }
+)(Game);
